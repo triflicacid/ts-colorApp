@@ -1,6 +1,6 @@
-import { ColorHarmony } from "utils";
+import { ColorHarmony } from "./utils";
 import globals from "./globals";
-import * as col from "./lib/color";
+import * as col from "../lib/color";
 
 
 /** Create color swatch `<div/>` */

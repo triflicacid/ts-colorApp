@@ -1,5 +1,5 @@
-import type { Tabs } from "./lib/Tabs";
-import type { Spectrum } from "./lib/color";
+import type { Tabs } from "../lib/Tabs";
+import type { Spectrum } from "../lib/color";
 
 export interface IGlobals {
   title: string;

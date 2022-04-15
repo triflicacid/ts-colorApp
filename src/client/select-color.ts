@@ -1,10 +1,10 @@
 import { generateColorBar, updateColorDisplay } from "./display-color";
-import { Tabs } from "./lib/Tabs";
-import * as col from "./lib/color";
+import { Tabs } from "../lib/Tabs";
+import * as col from "../lib/color";
 import globals from "./globals";
 import { CanvasFilter } from "lib/CanvasFilter";
-import { createInteractiveSwatch, formatString, generateColorListElement, getColorSeriesTitle, globalCompositionOperations } from "utils";
-import { paints } from "paints";
+import { formatString, generateColorListElement, globalCompositionOperations } from "./utils";
+import { paints } from "./paints";
 
 const SPECTRA_WIDTH = 500, SPECTRA_HEIGHT = 60;
 

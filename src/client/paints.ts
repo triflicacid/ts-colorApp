@@ -1,4 +1,4 @@
-import * as col from "./lib/color";
+import * as col from "../lib/color";
 
 export interface IColorSeries {
   type: string;

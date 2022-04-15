@@ -12,9 +12,9 @@ import { db } from './database';
 
   app.use(express.urlencoded({ extended: true })); // Read form data
 
-  app.use('/', router); // Router - control traffic
+  // app.use('/', router); // Router - control traffic
 
-  app.use(express.static(path.join(__dirname, '../../dist/public/'))); // Client-exposed files
+  app.use(express.static(path.join(__dirname, '../../public/'))); // Client-exposed files
 
   // Open database
   await db.open();

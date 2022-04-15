@@ -1,8 +1,7 @@
-import { generateColorBar, updateColorDisplay, updateColorDisplayFunctions } from "display-color";
-import { getClosestColor } from "paints";
-import { globals } from "globals";
-import { createInteractiveSwatch, formatString, generateColorListElement, getColorSeriesTitle } from "utils";
-import * as col from "./lib/color";
+import { generateColorBar, updateColorDisplayFunctions } from "./display-color";
+import { getClosestColor } from "./paints";
+import { globals } from "./globals";
+import { generateColorListElement } from "./utils";
 
 const CLOSEST_TOL: [number, number, number] = [15, 50, 50];
 

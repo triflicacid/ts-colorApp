@@ -1,12 +1,12 @@
 import { updateColorDisplay } from "./display-color";
 import { globals, IGlobals } from "./globals";
-import { Tabs } from "./lib/Tabs";
-import * as col from "./lib/color";
+import { Tabs } from "../lib/Tabs";
+import * as col from "../lib/color";
 import * as selectColor from "./select-color";
 import * as colorHarmonies from "./color-harmonies";
 import * as tonesTintsShades from "./tones-tints-shades";
 import * as mixing from "./mixing";
-import { paints, toColorSeries } from "paints";
+import { paints, toColorSeries } from "./paints";
 
 declare global {
   var globals: IGlobals;

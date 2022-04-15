@@ -1,5 +1,5 @@
 import { createHarmonyTemplate } from "./utils";
-import { generateColorBar, updateColorDisplay } from "./display-color";
+import { generateColorBar } from "./display-color";
 import globals from "./globals";
 import * as col from "../lib/color";
 

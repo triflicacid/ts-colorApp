@@ -1,6 +1,6 @@
-import { updateColorDisplay } from "display-color";
-import { IColorSeries } from "paints";
-import * as col from "./lib/color";
+import { updateColorDisplay } from "./display-color";
+import { IColorSeries } from "./paints";
+import * as col from "../lib/color";
 
 export type ColorHarmony = "tones" | "tints" | "shades" | "complementary" | "analogous" | "split complementary" | "triadic" | "tetrad" | "rectangular" | "divide color wheel";
 

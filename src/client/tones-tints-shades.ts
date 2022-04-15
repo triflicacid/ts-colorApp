@@ -1,5 +1,5 @@
-import { generateColorBar } from "display-color";
-import { createHarmonyTemplate } from "utils";
+import { generateColorBar } from "./display-color";
+import { createHarmonyTemplate } from "./utils";
 
 /** Create content - view active colors tones, tints and shades */
 export function generateContent() {
