@@ -1,5 +1,14 @@
-import { generateColorBar } from "./display-color";
-import { createHarmonyTemplate } from "./utils";
+import { generateColorBar } from "../display-color";
+import { createHarmonyTemplate } from "../utils";
+
+/** Tab header */
+export function tabHeader() {
+  const span = document.createElement("span");
+  span.innerText = "Tones, Tints & Shades";
+  return span;
+}
+
+export const TAB_ID = "tts";
 
 /** Create content - view active colors tones, tints and shades */
 export function generateContent() {

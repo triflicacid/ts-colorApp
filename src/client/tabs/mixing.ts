@@ -1,9 +1,18 @@
-import { generateColorBar, updateColorDisplayFunctions } from "./display-color";
-import { getClosestColor } from "./paints";
-import { globals } from "./globals";
-import { generateColorListElement } from "./utils";
+import { generateColorBar, updateColorDisplayFunctions } from "../display-color";
+import { getClosestColor } from "../paints";
+import { globals } from "../globals";
+import { generateColorListElement } from "../utils";
 
 const CLOSEST_TOL: [number, number, number] = [15, 50, 50];
+
+/** Tab header */
+export function tabHeader() {
+  const span = document.createElement("span");
+  span.innerText = "Mixing";
+  return span;
+}
+
+export const TAB_ID = "mixing";
 
 /** Content for how to mix globals.color */
 export function generateContent() {

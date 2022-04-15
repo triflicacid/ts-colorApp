@@ -1,12 +1,21 @@
-import { generateColorBar, updateColorDisplay } from "./display-color";
-import { Tabs } from "../lib/Tabs";
-import * as col from "../lib/color";
-import globals from "./globals";
+import { generateColorBar, updateColorDisplay } from "../display-color";
+import { Tabs } from "../../lib/Tabs";
+import * as col from "../../lib/color";
+import globals from "../globals";
 import { CanvasFilter } from "lib/CanvasFilter";
-import { formatString, generateColorListElement, globalCompositionOperations } from "./utils";
-import { paints } from "./paints";
+import { formatString, generateColorListElement, globalCompositionOperations } from "../utils";
+import { paints } from "../paints";
 
 const SPECTRA_WIDTH = 500, SPECTRA_HEIGHT = 60;
+
+/** Tab header */
+export function tabHeader() {
+  const span = document.createElement("span");
+  span.innerText = "Select";
+  return span;
+}
+
+export const TAB_ID = "select";
 
 /** Create content for "Select" - select a color */
 export function generateContent() {
@@ -304,58 +313,63 @@ function generatePickUsingImage() {
   p.appendChild(btn);
 
   // Download
-  p.insertAdjacentHTML("beforeend", " &nbsp;");
-  btn = document.createElement("button");
-  btn.innerText = "Download Image";
-  let downloadAs: string = "image/png";
-  btn.addEventListener("click", async () => {
-    let url = canvas.toDataURL(downloadAs);
-    let link = document.createElement("a");
-    link.href = url;
-    link.download = "image";
-    link.click();
-  });
-  let selectImageOut = document.createElement("select");
-  selectImageOut.insertAdjacentHTML("beforeend", "<option value='image/png'>PNG</option>");
-  selectImageOut.insertAdjacentHTML("beforeend", "<option value='image/jpeg'>JPEG</option>");
-  selectImageOut.insertAdjacentHTML("beforeend", "<option value='image/webp'>WEBP</option>");
-  selectImageOut.addEventListener("change", () => downloadAs = selectImageOut.value);
-  p.appendChild(btn);
-  p.insertAdjacentHTML("beforeend", " as ");
-  p.appendChild(selectImageOut);
+  if (globals.pro) {
+    p.insertAdjacentHTML("beforeend", " &nbsp;");
+    btn = document.createElement("button");
+    btn.innerText = "Download Image";
+    let downloadAs: string = "image/png";
+    btn.addEventListener("click", async () => {
+      let url = canvas.toDataURL(downloadAs);
+      let link = document.createElement("a");
+      link.href = url;
+      link.download = "image";
+      link.click();
+    });
+    let selectImageOut = document.createElement("select");
+    selectImageOut.insertAdjacentHTML("beforeend", "<option value='image/png'>PNG</option>");
+    selectImageOut.insertAdjacentHTML("beforeend", "<option value='image/jpeg'>JPEG</option>");
+    selectImageOut.insertAdjacentHTML("beforeend", "<option value='image/webp'>WEBP</option>");
+    selectImageOut.addEventListener("change", () => downloadAs = selectImageOut.value);
+    p.appendChild(btn);
+    p.insertAdjacentHTML("beforeend", " as ");
+    p.appendChild(selectImageOut);
+  }
 
-  // Image overlay option
-  p = document.createElement("p");
-  p.insertAdjacentHTML("beforeend", "Image overlay option: ");
-  let selectImageIn = document.createElement("select");
-  globalCompositionOperations.forEach(op => selectImageIn.insertAdjacentHTML("beforeend", `<option value='${op}'>${formatString(op)}</option>`));
-  (selectImageIn.querySelector("option[value='source-over']") as HTMLOptionElement).selected = true;
-  selectImageIn.addEventListener("click", () => (ctx.globalCompositeOperation = selectImageIn.value as GlobalCompositeOperation));
-  p.appendChild(selectImageIn);
-  container.appendChild(p);
-
-  // Filter
-  let title = document.createElement("h3");
-  title.innerHTML = "Filters &mdash; ";
-  btn = document.createElement("button");
-  btn.innerText = "Reset";
-  btn.addEventListener("click", () => {
-    //Filter
-    filter.reset();
-    fctrl.remove();
-    fctrl = filter.generateHTMLControl(applyFilter);
-    fctrlDiv.appendChild(fctrl);
-    applyFilter();
-    //Image composition
+  if (globals.pro) {
+    // Image overlay option
+    p = document.createElement("p");
+    p.insertAdjacentHTML("beforeend", "Image overlay option: ");
+    let selectImageIn = document.createElement("select");
+    globalCompositionOperations.forEach(op => selectImageIn.insertAdjacentHTML("beforeend", `<option value='${op}'>${formatString(op)}</option>`));
     (selectImageIn.querySelector("option[value='source-over']") as HTMLOptionElement).selected = true;
-    ctx.globalCompositeOperation = "source-over";
-  });
-  title.appendChild(btn);
-  container.appendChild(title);
-  let fctrlDiv = document.createElement("div");
-  container.appendChild(fctrlDiv);
-  let fctrl = filter.generateHTMLControl(applyFilter);
-  fctrlDiv.append(fctrl);
+    selectImageIn.addEventListener("click", () => (ctx.globalCompositeOperation = selectImageIn.value as GlobalCompositeOperation));
+    p.appendChild(selectImageIn);
+    container.appendChild(p);
+    
+    // Filter
+    let title = document.createElement("h3");
+    title.innerHTML = "Filters &mdash; ";
+    btn = document.createElement("button");
+    btn.innerText = "Reset";
+    btn.addEventListener("click", () => {
+      //Filter
+      filter.reset();
+      fctrl.remove();
+      fctrl = filter.generateHTMLControl(applyFilter);
+      fctrlDiv.appendChild(fctrl);
+      applyFilter();
+      //Image composition
+      (selectImageIn.querySelector("option[value='source-over']") as HTMLOptionElement).selected = true;
+      ctx.globalCompositeOperation = "source-over";
+    });
+    title.appendChild(btn);
+    container.appendChild(title);
+    let fctrlDiv = document.createElement("div");
+    container.appendChild(fctrlDiv);
+    let fctrl = filter.generateHTMLControl(applyFilter);
+    fctrlDiv.append(fctrl);
+  }
+
 
   return container;
 }

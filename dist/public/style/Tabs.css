@@ -43,6 +43,7 @@ body {
     text-align: center;
     justify-content: center;
     border-right: 1px solid black;
+    align-items: center;
 }
 
 .tab-control-btn:last-child {

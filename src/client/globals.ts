@@ -6,6 +6,7 @@ export interface IGlobals {
   color: [number, number, number];
   tabs: Tabs | undefined;
   spectra: Spectrum[];
+  pro: boolean;
 }
 
 export const globals: IGlobals = {
@@ -13,6 +14,7 @@ export const globals: IGlobals = {
   color: [0, 0, 0], // Active RGB color
   tabs: undefined,
   spectra: [],
+  pro: false,
 };
 
 export default globals;

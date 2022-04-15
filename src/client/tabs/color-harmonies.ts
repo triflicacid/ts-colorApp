@@ -1,7 +1,16 @@
-import { createHarmonyTemplate } from "./utils";
-import { generateColorBar } from "./display-color";
-import globals from "./globals";
-import * as col from "../lib/color";
+import { createHarmonyTemplate } from "../utils";
+import { generateColorBar } from "../display-color";
+import globals from "../globals";
+import * as col from "../../lib/color";
+
+/** Tab header */
+export function tabHeader() {
+  const span = document.createElement("span");
+  span.innerText = "Harmonies";
+  return span;
+}
+
+export const TAB_ID = "harmonies";
 
 /** Create content for "Harmonies" - display color harmonies */
 export function generateContent() {
@@ -23,25 +32,29 @@ export function generateContent() {
   center.appendChild(createHarmonyTemplate("triadic", 3));
   center.appendChild(createHarmonyTemplate("rectangular", 4));
 
-  let div = document.createElement("div"), dcw: HTMLDivElement;
-  title = document.createElement("h3");
-  title.innerHTML = "Divide Color Wheel &mdash; ";
-  let input = document.createElement("input");
-  input.type = "number";
-  input.min = "1";
-  input.max = "360";
-  input.value = "4";
-  input.addEventListener("change", () => {
-    if (dcw) dcw.remove();
+  if (globals.pro) {
+    let div = document.createElement("div"), dcw: HTMLDivElement;
+    title = document.createElement("h3");
+    title.innerHTML = "Divide Color Wheel &mdash; ";
+    let input = document.createElement("input");
+    input.type = "number";
+    input.min = "1";
+    input.max = "360";
+    input.value = "4";
+    input.addEventListener("change", () => {
+      if (dcw) dcw.remove();
+      dcw = createDivideColorWheelSegment(+input.value);
+      div.appendChild(dcw);
+      updateColourWheelDivisions(dcw);
+    });
+    title.appendChild(input);
+    div.appendChild(title);
+    center.appendChild(div);
     dcw = createDivideColorWheelSegment(+input.value);
     div.appendChild(dcw);
-    updateColourWheelDivisions(dcw);
-  });
-  title.appendChild(input);
-  div.appendChild(title);
-  center.appendChild(div);
-  dcw = createDivideColorWheelSegment(+input.value);
-  div.appendChild(dcw);
+  } else {
+    center.appendChild(createHarmonyTemplate("tetrad", 4));
+  }
 
   return container;
 }
