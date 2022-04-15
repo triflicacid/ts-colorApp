@@ -1,8 +1,0 @@
-.color-bar {
-  width: 80%;
-}
-
-.color-bar > .color-swatch {
-  width: 100%;
-  height: max(4vh, 50px);
-}
