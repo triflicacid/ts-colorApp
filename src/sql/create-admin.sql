@@ -1,0 +1,1 @@
+INSERT INTO Accounts (Name, Email, Password) VALUES ("Root", "root@tscolor.org", "root")

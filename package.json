@@ -2,11 +2,11 @@
   "name": "color",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "",
   "scripts": {
     "build-client": "webpack",
     "build-server": "tsc -p tsconfig-server.json",
-    "start-server": "node dist/server/server/main.js"
+    "server": "node dist/server/server/main.js"
   },
   "author": "",
   "license": "ISC",
@@ -25,7 +25,7 @@
     "express": "^4.17.3",
     "socket.io": "^4.4.1",
     "socket.io-client": "^4.4.1",
-    "sqlite3": "^5.0.3",
+    "sqlite3": "^5.0.4",
     "uuid": "^8.3.2"
   }
 }

@@ -14,7 +14,7 @@ export function createSwatch() {
 export function updateColorDisplay(rgb: [number, number, number] = globals.color) {
   const hex = col.rgb2hex(...rgb), hsl = col.rgb2hsl(...rgb);
 
-  document.title = globals.title + " | " + hex;
+  document.title = globals.title + (globals.user?.pro ? " Pro" : '') + " | " + hex;
 
   // Color swatches
   for (const swatch of document.querySelectorAll<HTMLElement>(":not(.color-harmony) > .color-swatch:not(.static)")) {

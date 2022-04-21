@@ -32,7 +32,7 @@ export function generateContent() {
   center.appendChild(createHarmonyTemplate("triadic", 3));
   center.appendChild(createHarmonyTemplate("rectangular", 4));
 
-  if (globals.pro) {
+  if (globals.user && globals.user.pro) {
     let div = document.createElement("div"), dcw: HTMLDivElement;
     title = document.createElement("h3");
     title.innerHTML = "Divide Color Wheel &mdash; ";

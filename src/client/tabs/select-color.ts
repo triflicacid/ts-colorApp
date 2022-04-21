@@ -313,7 +313,7 @@ function generatePickUsingImage() {
   p.appendChild(btn);
 
   // Download
-  if (globals.pro) {
+  if (globals.user && globals.user.pro) {
     p.insertAdjacentHTML("beforeend", " &nbsp;");
     btn = document.createElement("button");
     btn.innerText = "Download Image";
@@ -335,7 +335,7 @@ function generatePickUsingImage() {
     p.appendChild(selectImageOut);
   }
 
-  if (globals.pro) {
+  if (globals.user && globals.user.pro) {
     // Image overlay option
     p = document.createElement("p");
     p.insertAdjacentHTML("beforeend", "Image overlay option: ");

@@ -63,3 +63,18 @@ div.main-container {
 .item-list > .item:last-child {
   border-right: none;
 }
+
+.login-form {
+  overflow: hidden;
+  width: 50%;
+  margin-left: 25%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+}
+
+.error {
+  color: crimson;
+}

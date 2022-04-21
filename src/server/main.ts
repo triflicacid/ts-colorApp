@@ -4,6 +4,7 @@ import path from 'path';
 import { router } from './router';
 import { terminate } from './utils';
 import { db } from './database';
+import { ClientConnection } from './ClientConnection';
 
 // MAIN
 (async function () {
@@ -29,10 +30,14 @@ import { db } from './database';
   const io = new socketio.Server(server); // maxHttpBufferSize
   io.on('connection', (socket: socketio.Socket) => {
     if (ready) {
-      // const conn = new Connection(socket); // Create new Connection on socket conn - this will handle everything else...
-      console.log(socket);
+      const mgr = new ClientConnection(socket);
+      console.log(`[server] Opened socket #${socket.id}`);
+
+      (async function () {
+        await mgr.invokeEvent("login", { email: 'root@tscolor.org', pwd: 'root' });
+      })();
     } else {
-      console.log(`[socket]: attempted connection from ${socket.id} - server not ready`);
+      console.log(`[socket] attempted connection from ${socket.id} - server not ready`);
     }
   });
 
@@ -43,7 +48,11 @@ import { db } from './database';
     log: true,
     fn: async () => {
       await db.close(); // Close database handle
-      console.log(`[database]: Closed connection: ${db.path}`);
+      console.log(`[database] Closed connection: ${db.path}`);
+      ClientConnection.all.forEach((sock, id) => {
+        sock.disconnect();
+        console.log(`[server] Closed socket #${id}`);
+      });
     }
   });
 

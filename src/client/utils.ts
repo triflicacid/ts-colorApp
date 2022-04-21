@@ -5,7 +5,7 @@ import { globals } from "./globals";
 
 export type ColorHarmony = "tones" | "tints" | "shades" | "complementary" | "analogous" | "split complementary" | "triadic" | "tetrad" | "rectangular" | "divide color wheel";
 
-export const formatString = (s: string) => s.split(/(?<=[a-z])(?=[A-Z])|\s|\-/g).map(x => x[0].toUpperCase() + (x.substring(1) ?? "")).join(' ');
+export const formatString = (s: string) => s.split(/(?<=[a-z])(?=[A-Z])|\s|\-/g).map(x => x ? x[0].toUpperCase() + (x.substring(1) ?? "") : "").join(' ');
 
 /** Create template for a harmony */
 export function createHarmonyTemplate(harmony: ColorHarmony, n: number, title = true) {
