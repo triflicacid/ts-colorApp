@@ -1,14 +1,6 @@
-import { ColorHarmony } from "./utils";
+import { ColorHarmony, createBasicSwatch } from "./utils";
 import globals from "./globals";
 import * as col from "../lib/color";
-
-
-/** Create color swatch `<div/>` */
-export function createSwatch() {
-  const swatch = document.createElement("div");
-  swatch.classList.add("color-swatch");
-  return swatch;
-}
 
 /** Update to a new color  */
 export function updateColorDisplay(rgb: [number, number, number] = globals.color) {
@@ -21,8 +13,13 @@ export function updateColorDisplay(rgb: [number, number, number] = globals.color
     swatch.style.backgroundColor = hex;
     swatch.title = hex;
     if (swatch.classList.contains("fancy")) {
-      swatch.innerText = hex;
-      swatch.style.color = col.bestTextColor(rgb);
+      let input = swatch.querySelector("input");
+      if (input) {
+        input.value = hex;
+      } else {
+        swatch.innerText = hex;
+        swatch.style.color = col.bestTextColor(rgb);
+      }
     }
   }
 
@@ -173,7 +170,7 @@ export function generateColorBar() {
   container.classList.add("color-bar");
 
   // Show color
-  let swatch = createSwatch();
+  let swatch = createBasicSwatch();
   container.appendChild(swatch);
   container.insertAdjacentHTML("beforeend", "<br>");
 

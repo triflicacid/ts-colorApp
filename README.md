@@ -25,5 +25,4 @@ Execute `npm run start-server` to bring the server online, and visit the link pr
 ## Improvment Ideas
 - `Select > Image` : float to left, with filter options on the right?
 - Account feature - normal and advanced
-  - Save colors. *normal: limit number. advanced: unlimited.*
   - Create palletes, which are collections of colors. **advanced only**

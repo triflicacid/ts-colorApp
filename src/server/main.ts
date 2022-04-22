@@ -5,6 +5,7 @@ import { router } from './router';
 import { terminate } from './utils';
 import { db } from './database';
 import { ClientConnection } from './ClientConnection';
+import { PORT } from '../constants';
 
 // MAIN
 (async function () {
@@ -21,7 +22,6 @@ import { ClientConnection } from './ClientConnection';
   await db.open();
   console.log(`[database]: Opened connection: ${db.path}`);
 
-  const PORT = 1234;
   const server = app.listen(PORT, async () => {
     console.log(`[server]: Server is running at http://localhost:${PORT}`);
     ready = true;

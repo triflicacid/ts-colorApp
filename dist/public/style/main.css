@@ -16,19 +16,30 @@ div.main-container {
   border: 1px solid black;
 }
 
-.color-swatch.fancy {
+.color-swatch.fancy:before {
+  content: "";
   display: inline-block;
-  /* width: 300px; */
-  width: 20%;
-  min-width: 100px;
-  height: 45px;
-  border-radius: 4px;
-  text-align: center;
-  padding: 20px 0 0 0;
-  margin-left: -6px;
+  height: 100%;
+  vertical-align: middle;
 }
 
-.color-swatch.fancy:hover {
+.color-swatch.fancy {
+  display: inline-block;
+  width: 20%;
+  min-width: 100px;
+  height: 50px;
+  border-radius: 4px;
+  margin-left: -6px;
+  text-align: center;
+}
+
+.color-swatch.fancy.small {
+  height: 30px;
+  width: 15%;
+  margin-left: -4px;
+}
+
+.color-swatch.fancy:not(.no-hover):hover {
   cursor: crosshair;
   filter: sepia(70%);
 }

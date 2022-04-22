@@ -5,6 +5,13 @@ export namespace IDatabase {
         Email: string;
         Password: string;
         Pro: number; // Boolean
-        Hex: string; // Last hex code
+    }
+
+    export interface Colors {
+        ID: number;
+        AccountID: number;
+        PaletteID: number | null;
+        Name: string;
+        Hex: string;
     }
 }

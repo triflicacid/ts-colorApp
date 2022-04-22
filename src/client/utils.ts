@@ -26,10 +26,19 @@ export function createHarmonyTemplate(harmony: ColorHarmony, n: number, title = 
   return div;
 }
 
-/** Create interactive swatch */
-export function createInteractiveSwatch(hex?: string, onclick?: (hex: string) => void) {
+/** Create color swatch `<div/>` */
+export function createBasicSwatch() {
+  const swatch = document.createElement("div");
+  swatch.classList.add("color-swatch");
+  return swatch;
+}
+
+/** Create configurable swatch */
+export function createSwatch(hex?: string, isFancy = true, isStatic = true, onclick?: (hex: string) => void) {
   let s = document.createElement("span");
-  s.classList.add("color-swatch", "fancy", "static");
+  s.classList.add("color-swatch");
+  if (isFancy) s.classList.add("fancy");
+  if (isStatic) s.classList.add("static");
   if (hex) {
     let rgb = col.hex2rgb(hex);
     s.style.backgroundColor = hex;
@@ -37,7 +46,7 @@ export function createInteractiveSwatch(hex?: string, onclick?: (hex: string) =>
     s.style.color = col.bestTextColor(rgb);
     s.innerText = hex;
   }
-  s.addEventListener("click", () => onclick?.(s.innerText));
+  if (onclick) s.addEventListener("click", () => onclick(s.innerText));
   return s;
 }
 
@@ -62,7 +71,7 @@ export function generateColorListElement(allColors: IColorSeries[], filtering = 
   tableDiv.classList.add("central");
 
   const swatch = (hex: string) => {
-    let s = createInteractiveSwatch(hex, hex => {
+    let s = createSwatch(hex, true, true, hex => {
       globals.color = col.hex2rgb(hex);
       updateColorDisplay();
     });
@@ -92,7 +101,7 @@ export function generateColorListElement(allColors: IColorSeries[], filtering = 
         const rgb = col.hex2rgb(hex);
         let tr = document.createElement("tr");
         let td = document.createElement("td");
-        let s = createInteractiveSwatch(hex, hex => {
+        let s = createSwatch(hex, true, true, hex => {
           globals.color = rgb;
           updateColorDisplay();
         });

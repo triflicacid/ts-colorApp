@@ -44,7 +44,7 @@ export class SocketManager<S extends ISocket> {
     }
 
     /** Invoke event unto oneself (NB only awaits if this._callbacks[name] returns Promise. */
-    public async invokeEvent(name: string, arg: any) {
+    public async invokeEvent(name: string, arg?: any) {
         if (this._callbacks[name]) await this._callbacks[name](arg);
     }
 

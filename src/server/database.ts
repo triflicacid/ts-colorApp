@@ -35,5 +35,27 @@ export async function createAccount(name: string, email: string, password: strin
 }
 
 export async function deleteAccount(id: number) {
-  db.all("DELETE FROM Accounts WHERE ID=?", [id]);
+  await db.all("DELETE FROM Accounts WHERE ID=?", [id]);
+}
+
+/** Get list of all saved colors */
+export async function getSavedColors(accountID: number) {
+  return await db.all<IDatabase.Colors>("SELECT * FROM Colors WHERE AccountID=?", [accountID]);
+}
+
+export async function saveColor(accountID: number, hex: string) {
+  hex = hex.toLowerCase();
+  await db.get<IDatabase.Colors>("INSERT INTO Colors (AccountID, Name, Hex) VALUES (?, ?, ?)", [accountID, hex, hex]);
+}
+
+export async function removeAllColors(accountID: number, hex: string) {
+  await db.all("DELETE FROM Colors WHERE AccountID=? AND Hex=?", [accountID, hex]);
+}
+
+export async function removeColor(colorID: number) {
+  await db.get("DELETE FROM Colors WHERE ID=?", [colorID]);
+}
+
+export async function renameColor(colorID: number, name: string) {
+  await db.get("UPDATE Colors SET Name=? WHERE ID=?", [name, colorID]);
 }
