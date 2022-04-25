@@ -79,7 +79,7 @@ export function createLogin(titleEl?: keyof HTMLElementTagNameMap) {
   inputEmail.type = "email";
   inputEmail.placeholder = "Email";
   inputEmail.addEventListener("input", () => error.hidden = true);
-  
+
   const inputPwd = document.createElement("input");
   inputPwd.type = "password";
   inputPwd.placeholder = "Password";

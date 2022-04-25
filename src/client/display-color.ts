@@ -78,27 +78,9 @@ export function updateColorDisplay(rgb: [number, number, number] = globals.color
 
   // Color text
   for (const el of document.querySelectorAll<HTMLElement>(":not(input).color-display")) {
-    let repr: string;
-    switch (el.dataset.model as col.ColorFormat) {
-      case "rgb":
-        repr = col.col2str("rgb", rgb);
-        break;
-      case "rgba":
-        repr = col.col2str("rgba", rgb);
-        break;
-      case "cmyk":
-        repr = col.col2str("cmyk", col.rgb2cmyk(...rgb));
-        break;
-      case "hsl":
-        repr = col.col2str("hsl", col.rgb2hsl(...rgb));
-        break;
-      case "hsv":
-        repr = col.col2str("hsv", col.rgb2hsv(...rgb));
-        break;
-      default:
-        repr = hex;
-    }
-    el.innerText = repr;
+    let cdata = col.col2col<[number, number, number], col.ColorData>(rgb, "rgb", el.dataset.model as col.ColorFormat);
+    let str = Array.isArray(cdata) ? col.col2str(el.dataset.model as col.ColorFormat, cdata) : cdata as string;
+    el.innerText = str;
     el.title = hex;
   }
 
@@ -107,49 +89,17 @@ export function updateColorDisplay(rgb: [number, number, number] = globals.color
     if (el.dataset.model === "hex") {
       el.value = col.rgb2hex(...rgb);
     } else {
-      let data: number[], i = +(el.dataset.index ?? 0);
-      switch (el.dataset.model as col.ColorFormat) {
-        case "rgb":
-          data = rgb;
-          break;
-        case "rgba":
-          data = [...rgb, 1];
-          break;
-        case "cmyk":
-          data = col.rgb2cmyk(...rgb);
-          break;
-        case "hsl":
-          data = col.rgb2hsl(...rgb);
-          break;
-        case "hsv":
-          data = col.rgb2hsv(...rgb);
-          break;
-        default:
-          continue;
-      }
-      el.value = data[i].toString();
+      let cdata = col.col2col<[number, number, number]>(rgb, "rgb", el.dataset.model as col.ColorFormat);
+      el.value = el.dataset.index ? cdata[+el.dataset.index].toString() : Array.isArray(cdata) ? cdata.join(', ') : cdata;
     }
   }
 
   // Spectra midpoints
-  for (const spectrum of globals.spectra) {
-    let data = (function () {
-      switch (spectrum.format) {
-        case "rgb":
-          return rgb;
-        case "hsl":
-          return col.rgb2hsl(...rgb);
-        case "hsv":
-          return col.rgb2hsv(...rgb);
-        case "cmyk":
-          return col.rgb2cmyk(...rgb);
-        default:
-          return undefined;
-      }
-    })();
-    if (data) {
-      spectrum.stops = data.map((d, i) => isFinite(spectrum.colorData[i]) ? -1 : d).filter(n => n !== -1);
-      if (spectrum.format === "hsl") {
+  for (const spectrum of globals.spectra1d) {
+    let data = col.col2col<[number, number, number]>(rgb, "rgb", spectrum.format);
+    if (Array.isArray(data)) {
+      spectrum.stops = data.map((d, i) => isNaN(spectrum.colorData[i]) ? d : NaN).filter(n => !isNaN(n));
+      if (spectrum.format === "hsl" || spectrum.format === "hsv") {
         // Update hues?
         if (isFinite(spectrum.colorData[0]) && spectrum.colorData[0] !== hsl[0]) spectrum.colorData[0] = hsl[0];
       }

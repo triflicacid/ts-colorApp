@@ -50,7 +50,118 @@ export function generateContent() {
 /** Pick color using a color space: RGB, HSL, CMYK */
 function generatePickUsingModel() {
   const container = document.createElement("div");
-  container.append(generatePickUsingRGB(), generatePickUsingCMYK(), generatePickUsingHSL());
+  // container.append(generatePickUsingRGB(), generatePickUsingCMYK(), generatePickUsingHSL());
+  container.append(
+    generateUsingColorModel("rgb", [0, 0, 0], true, [0, 0, 0], [255, 255, 255]),
+    generateUsingColorModel("cmyk", [0, 0, 0, 0], true, [0, 0, 0, 0], [100, 100, 100, 100], col.cmyk2rgb, col.rgb2cmyk),
+    generateUsingColorModel("hsl", [0, 100, 50], true, [0, 0, 0], [360, 100, 100], col.hsl2rgb, col.rgb2hsl),
+  );
+  if (globals.user?.pro) {
+    container.insertAdjacentHTML("beforeend", "<hr>");
+    container.append(
+      generateUsingColorModel("cmy", [0, 0, 0], true, [0, 0, 0], [100, 100, 100], col.cmy2rgb, col.rgb2cmy),
+      generateUsingColorModel("hsv", [0, 100, 100], true, [0, 0, 0], [360, 100, 100], col.hsv2rgb, col.rgb2hsv),
+      generateUsingColorModel("lab", [0, 0, 0], false, undefined, undefined, (l: number, a: number, b: number) => col.xyz2rgb(...col.lab2xyz(l, a, b)), (r: number, g: number, b: number) => col.xyz2lab(...col.rgb2xyz(r, g, b))),
+      generateUsingColorModel("lms", [0, 0, 0], false, undefined, undefined, (l: number, m: number, s: number) => col.xyz2rgb(...col.lms2xyz(l, m, s)), (r: number, g: number, b: number) => col.xyz2lms(...col.rgb2xyz(r, g, b))),
+      generateUsingColorModel("luv", [0, 0, 0], false, undefined, undefined, (l: number, u: number, v: number) => col.xyz2rgb(...col.luv2xyz(l, u, v)), (r: number, g: number, b: number) => col.xyz2luv(...col.rgb2xyz(r, g, b))),
+      generateUsingColorModel("xyY", [0, 0, 0], false, undefined, undefined, (x: number, y: number, Y: number) => col.xyz2rgb(...col.xyY2xyz(x, y, Y)), (r: number, g: number, b: number) => col.xyz2xyY(...col.rgb2xyz(r, g, b))),
+      generateUsingColorModel("xyz", [0, 0, 0], false, undefined, undefined, col.xyz2rgb, col.rgb2xyz),
+    );
+  }
+  return container;
+}
+
+/**
+ * Generate input fields for inputting a color using a model.
+ * @param model color model e.g. "hsl"
+ * @param data  color data for each spectra. Note, the respective value will vary.
+ * @param spectra display color spectras for each component?
+ * @param dataMin minimum values for each value
+ * @param dataMax maximum values for each value
+ * @param toRGB function to convert color from `model` to rgb
+ * @param fromRGB function to convert color from reg to `model`
+ * @returns container
+ */
+function generateUsingColorModel<T extends [number, number, number] | [number, number, number, number]>(model: col.NColorFormat, data: T, spectra: boolean, dataMin?: T, dataMax?: T, toRGB?: (...nums: number[]) => [number, number, number], fromRGB?: (r: number, g: number, b: number) => T) {
+  const container = document.createElement("div");
+
+  let title = document.createElement("h2");
+  title.classList.add("color-display");
+  title.dataset.model = model;
+  container.appendChild(title);
+
+  if (spectra) {
+    for (let i = 0; i < data.length; ++i) {
+      let p = document.createElement("p");
+      let input = document.createElement("input");
+      input.type = "number";
+      if (dataMin) input.min = dataMin[i].toString();
+      if (dataMax) input.max = dataMax[i].toString();
+      input.classList.add("color-display");
+      input.dataset.model = model;
+      input.dataset.index = i.toString();
+      input.addEventListener("change", () => {
+        let cdata = fromRGB ? fromRGB(...globals.color) : globals.color;
+        cdata[i] = col.clamp(+input.value, (dataMin as T)[i], (dataMax as T)[i]);
+        if (toRGB) globals.color = toRGB(...data);
+        updateColorDisplay();
+      });
+      p.appendChild(input);
+      p.insertAdjacentHTML("beforeend", " &nbsp;&nbsp;");
+      let spectrum = new col.Spectrum_1D(model, data.map((n, j) => i === j ? NaN : n) as T, [(dataMin as T)[i], (dataMax as T)[i]], toRGB);
+      globals.spectra1d.push(spectrum);
+      spectrum.stops.push(globals.color[i]);
+      let I = spectrum.createInteractive(SPECTRA_WIDTH, SPECTRA_HEIGHT, 0, "span");
+      I.onclick = () => {
+        let cdata = fromRGB ? fromRGB(...globals.color) : globals.color;
+        cdata[i] = spectrum.stops[0];
+        if (toRGB) globals.color = toRGB(...cdata);
+        updateColorDisplay();
+      };
+      p.appendChild(I.element);
+      container.appendChild(p);
+    }
+  } else {
+    let p = document.createElement("p");
+    p.append(model + "(");
+    if (dataMin && dataMax) {
+      // Seperate inputs
+      for (let i = 0; i < data.length; ++i) {
+        let input = document.createElement("input");
+        input.type = dataMin && dataMax ? "range" : "number";
+        if (dataMin) input.min = dataMin[i].toString();
+        if (dataMax) input.max = dataMax[i].toString();
+        input.classList.add("color-display");
+        input.dataset.model = model;
+        input.dataset.index = i.toString();
+        input.addEventListener("change", () => {
+          let cdata = fromRGB ? fromRGB(...globals.color) : globals.color;
+          cdata[i] = (dataMin && dataMax) ? col.clamp(+input.value, dataMin[i], dataMax[i]) : +input.value;
+          if (toRGB) globals.color = toRGB(...data);
+          updateColorDisplay();
+        });
+        p.appendChild(input);
+        if (i < data.length - 1) p.append(" ,  ");
+      }
+    } else {
+      let input = document.createElement("input");
+      input.type = "text";
+      input.style.width = "50%";
+      input.classList.add("color-display");
+      input.dataset.model = model;
+      input.value = data.join(", ");
+      input.addEventListener("change", () => {
+        let data = input.value.split(",").map(x => +x.trim()).filter(x => !isNaN(x) && isFinite(x));
+        let rgb = col.col2col<any, [number, number, number]>(data, model, "rgb");
+        globals.color = rgb;
+        updateColorDisplay();
+      });
+      p.appendChild(input);
+    }
+    p.append(")");
+    container.appendChild(p);
+  }
+
   return container;
 }
 
@@ -93,8 +204,8 @@ function generatePickUsingRGB() {
     });
     p.appendChild(input);
     p.insertAdjacentHTML("beforeend", " &nbsp;&nbsp;");
-    let spectrum = new col.Spectrum("rgb", Array.from({ length: 3 }, (_, j) => i === j ? -Infinity : 0) as [number, number, number], range);
-    globals.spectra.push(spectrum);
+    let spectrum = new col.Spectrum_1D("rgb", Array.from({ length: 3 }, (_, j) => i === j ? NaN : 0) as [number, number, number], range);
+    globals.spectra1d.push(spectrum);
     spectrum.stops.push(globals.color[i]);
     let I = spectrum.createInteractive(SPECTRA_WIDTH, SPECTRA_HEIGHT, 0, "span");
     I.onclick = () => {
@@ -136,8 +247,8 @@ function generatePickUsingCMYK() {
     });
     p.appendChild(input);
     p.insertAdjacentHTML("beforeend", " &nbsp;&nbsp;");
-    let spectrum = new col.Spectrum("cmyk", Array.from({ length: 4 }, (_, j) => i === j ? -Infinity : 0) as [number, number, number], range, col.cmyk2rgb);
-    globals.spectra.push(spectrum);
+    let spectrum = new col.Spectrum_1D("cmyk", Array.from({ length: 4 }, (_, j) => i === j ? NaN : 0) as [number, number, number], range, col.cmyk2rgb);
+    globals.spectra1d.push(spectrum);
     spectrum.stops.push(globals.color[i]);
     let I = spectrum.createInteractive(SPECTRA_WIDTH, SPECTRA_HEIGHT, 0, "span");
     I.onclick = () => {
@@ -180,8 +291,8 @@ function generatePickUsingHSL() {
     });
     p.appendChild(input);
     p.insertAdjacentHTML("beforeend", " &nbsp;&nbsp;");
-    let spectrum = new col.Spectrum("hsl", [0, 100, 50].map((v, j) => i === j ? -Infinity : v) as [number, number, number], range, col.hsl2rgb);
-    globals.spectra.push(spectrum);
+    let spectrum = new col.Spectrum_1D("hsl", [0, 100, 50].map((v, j) => i === j ? NaN : v) as [number, number, number], range, col.hsl2rgb);
+    globals.spectra1d.push(spectrum);
     spectrum.stops.push(globals.color[i]);
     let I = spectrum.createInteractive(SPECTRA_WIDTH, SPECTRA_HEIGHT, 0, "span");
     I.onclick = () => {
@@ -345,7 +456,7 @@ function generatePickUsingImage() {
     selectImageIn.addEventListener("click", () => (ctx.globalCompositeOperation = selectImageIn.value as GlobalCompositeOperation));
     p.appendChild(selectImageIn);
     container.appendChild(p);
-    
+
     // Filter
     let title = document.createElement("h3");
     title.innerHTML = "Filters &mdash; ";

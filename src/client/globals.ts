@@ -1,5 +1,5 @@
 import type { Tabs } from "../lib/Tabs";
-import type { Spectrum } from "../lib/color";
+import type { Spectrum_1D } from "../lib/color";
 import type { SocketManager } from "../lib/SocketManager";
 import type { Socket } from 'socket.io-client';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
@@ -10,7 +10,7 @@ export interface IGlobals {
   page: ActivePage;
   color: [number, number, number];
   tabs: Tabs | undefined;
-  spectra: Spectrum[];
+  spectra1d: Spectrum_1D[];
   smgr: SocketManager<Socket<DefaultEventsMap, DefaultEventsMap>> | undefined;
   user: IClientData | undefined;
 }
@@ -20,7 +20,7 @@ export const globals: IGlobals = {
   page: ActivePage.None,
   color: [0, 0, 0], // Active RGB color
   tabs: undefined,
-  spectra: [],
+  spectra1d: [],
   smgr: undefined,
   user: undefined,
 };
